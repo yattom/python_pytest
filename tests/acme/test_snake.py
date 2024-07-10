@@ -5,39 +5,37 @@
 サンプルテスト
 """
 
-import re
+import pytest
+
+from acme.snake import ultimate_answer, Python, MontyPython
 
 
-def pytest_generate_tests(metafunc):
-    """
-    Parametrizing test methods through per-class configuration
-    http://pytest.org/latest-ja/example/parametrize.html#id5
-    """
-    try:
-        funcarglist = metafunc.cls.params[metafunc.function.__name__]
-    except AttributeError:
-        return
-    argnames = list(funcarglist[0])
-    metafunc.parametrize(
-        argnames,
-        [[funcargs[name] for name in argnames] for funcargs in funcarglist]
-    )
+def test_ultimate_answer():
+    assert ultimate_answer() == 42
 
 
 class TestPython:
-    def test_be_out_of_question(self):
-        from acme.snake import Python
-        assert re.match(r'^(Hiss\!)+$', Python().say()), 'シャー'
+    def test_say(self):
+        # Arrange
+        # sut = System Under Test
+        sut = Python()
+        # Act
+        actual = sut.say()
+        # Assert
+        assert actual == 'Hiss!'
 
 
 class TestMontyPython:
-    params = {
-        'test_say_name': [
-            dict(name='Monty Python'),
-            dict(name='John Smith'),
-        ],
-    }
-
-    def test_say_name(self, name):
-        from acme.snake import MontyPython
-        assert MontyPython().say(name) == 'Hello ' + name
+    @pytest.mark.parametrize(
+        'name, expected',
+        [
+            ('Monty Python', 'Hello Monty Python'),
+            ('John Smith', 'Hello John Smith'),
+        ])
+    def test_say_name(self, name, expected):
+        # Arrange
+        sut = MontyPython(name)
+        # Act
+        actual = sut.say()
+        # Assert
+        assert actual == expected

@@ -1,13 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from random import randint
+
+def ultimate_answer() -> int:
+    return 42
 
 
-class Python(object):
-    def say(self, greeting=None):
-        return 'Hiss!' * randint(1, 9)
+class Python:
+    def say(self) -> str:
+        return 'Hiss!'
 
 
 class MontyPython(Python):
-    def say(self, greeting):
-        return 'Hello %s' % greeting
+    def __init__(self, name: str):
+        self.name = name
+
+    def say(self) -> str:
+        return f'Hello {self.name}'
